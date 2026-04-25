@@ -3,11 +3,12 @@ package com.example.smartshort
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.database.ContentObserver
 import android.net.Uri
-import android.os.*
-import android.provider.MediaStore
-import android.util.Log
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -22,6 +23,16 @@ class MainActivity : ComponentActivity() {
         Handler(Looper.getMainLooper()).postDelayed({
             startScreenshotService()
         }, 1000)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.canDrawOverlays(this)) {
+                val intent = Intent(
+                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:$packageName")
+                )
+                startActivity(intent)
+            }
+        }
     }
 
 //    override fun onResume() {
